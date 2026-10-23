@@ -3,12 +3,22 @@ import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User 
 import firebaseConfig from '../../firebase-applet-config.json';
 import { Student } from '../types/quiz';
 
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+let app: any = null;
+let authInstance: any = null;
+let providerInstance: GoogleAuthProvider | null = null;
 
-const provider = new GoogleAuthProvider();
-provider.addScope('https://www.googleapis.com/auth/spreadsheets');
-provider.addScope('https://www.googleapis.com/auth/drive.file');
+try {
+  app = initializeApp(firebaseConfig);
+  authInstance = getAuth(app);
+  providerInstance = new GoogleAuthProvider();
+  providerInstance.addScope('https://www.googleapis.com/auth/spreadsheets');
+  providerInstance.addScope('https://www.googleapis.com/auth/drive.file');
+} catch (e) {
+  console.warn('Firebase initialization warning:', e);
+}
+
+export const auth = authInstance;
+export const provider = providerInstance;
 
 let isSigningIn = false;
 let cachedAccessToken: string | null = null;
@@ -17,6 +27,10 @@ export const initAuth = (
   onAuthSuccess?: (user: User, token: string) => void,
   onAuthFailure?: () => void
 ) => {
+  if (!auth) {
+    if (onAuthFailure) onAuthFailure();
+    return () => {};
+  }
   return onAuthStateChanged(auth, async (user: User | null) => {
     if (user) {
       if (cachedAccessToken) {
@@ -33,6 +47,9 @@ export const initAuth = (
 };
 
 export const googleSignIn = async (): Promise<{ user: User; accessToken: string } | null> => {
+  if (!auth || !provider) {
+    throw new Error('Firebase Auth is not available in this environment');
+  }
   try {
     isSigningIn = true;
     const result = await signInWithPopup(auth, provider);
@@ -55,7 +72,9 @@ export const getAccessToken = async (): Promise<string | null> => {
 };
 
 export const logoutGoogle = async () => {
-  await auth.signOut();
+  if (auth) {
+    await auth.signOut();
+  }
   cachedAccessToken = null;
 };
 

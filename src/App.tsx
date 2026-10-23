@@ -197,10 +197,10 @@ export const App: React.FC = () => {
 
         {/* Footer */}
         <footer className="text-center text-xs text-[var(--muted2)] mt-8 py-3 border-t border-[#d8b45c]/10">
-          <p className="m-0">
+          <p className="m-0 font-medium">
             {lang === 'ar'
-              ? 'كنيسة السيدة العذراء والأنبا بيشوي — أسرة إيليا النبي (إعدادي)'
-              : 'St. Mary & St. Bishoy Coptic Orthodox Church — Elisha Class'}
+              ? 'كنيسة الشهيد العظيم مارمرقس بمصر الجديدة — أسرة أنبياء (فصل أليشع)'
+              : 'St. Mark Coptic Orthodox Church, Heliopolis — Prophets Family (Elisha Class)'}
           </p>
         </footer>
       </div>

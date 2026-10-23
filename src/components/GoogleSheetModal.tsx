@@ -355,7 +355,7 @@ export const GoogleSheetModal: React.FC<GoogleSheetModalProps> = ({ lang, onClos
 
         {/* Footer info */}
         <div className="text-[11px] text-slate-400 border-t border-white/10 pt-4 flex items-center justify-between">
-          <span>{lang === 'ar' ? 'أسرة إيليا النبي - كنيسة العذراء والأنبا بيشوي' : 'Elisha Sunday School Class'}</span>
+          <span>{lang === 'ar' ? 'كنيسة الشهيد مارمرقس مصر الجديدة — أسرة أنبياء (فصل أليشع)' : 'St. Mark Church Heliopolis — Prophets Family (Elisha Class)'}</span>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-white transition-colors"

@@ -120,21 +120,34 @@ class DatabaseStore {
     });
   }
 
+  private memoryStore: Record<string, string> = {};
+
   private load<T>(key: string, fallback: T): T {
     try {
-      const saved = localStorage.getItem(key);
-      if (saved) return JSON.parse(saved);
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const saved = window.localStorage.getItem(key);
+        if (saved) return JSON.parse(saved);
+      }
     } catch (e) {
-      console.warn("Error loading", key, e);
+      console.warn("Storage read fallback for", key);
+    }
+    if (this.memoryStore[key]) {
+      try {
+        return JSON.parse(this.memoryStore[key]);
+      } catch (e) {}
     }
     return fallback;
   }
 
   private save(key: string, data: any) {
+    const serialized = JSON.stringify(data);
+    this.memoryStore[key] = serialized;
     try {
-      localStorage.setItem(key, JSON.stringify(data));
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(key, serialized);
+      }
     } catch (e) {
-      console.warn("Error saving", key, e);
+      console.warn("Storage write fallback for", key);
     }
     this.notify();
   }
